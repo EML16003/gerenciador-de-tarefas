@@ -1,0 +1,14 @@
+{
+  "name": "ger-tarefas",
+  "version": "1.0.0",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "^26.6.10"
+  },
+  "dependencies": {
+    "@electron/remote": "^2.1.3"
+  }
+}
