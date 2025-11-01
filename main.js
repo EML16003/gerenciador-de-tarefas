@@ -1,42 +1,28 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
-const path = require('path');
-const TaskStore = require('./taskStore');
+document.addEventListener("DOMContentLoaded", function () {
+  const taskInput = document.getElementById("taskInput");
+  const addBtn = document.getElementById("addBtn");
+  const taskList = document.getElementById("taskList");
 
-// ⬇️ Inicializa o módulo @electron/remote
-require('@electron/remote/main').initialize();
+  let tasks = TaskStorage.getTasks();
 
-let mainWindow;
-const store = new TaskStore(path.join(app.getPath('userData'), 'tasks.json'));
+  function renderTasks() {
+    taskList.innerHTML = "";
+    tasks.forEach((task, index) => {
+      const li = document.createElement("li");
+      li.textContent = task.text;
+      taskList.appendChild(li);
+    });
+  }
 
-function createWindow() {
-  mainWindow = new BrowserWindow({
-    width: 900,
-    height: 700,
-    webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false
+  addBtn.addEventListener("click", function () {
+    const text = taskInput.value.trim();
+    if (text !== "") {
+      tasks.push({ text: text });
+      TaskStorage.saveTasks(tasks);
+      taskInput.value = "";
+      renderTasks();
     }
   });
 
-  // ⬇️ Habilita o remote para esta janela
-  require('@electron/remote/main').enable(mainWindow.webContents);
-
-  mainWindow.loadFile('index.html');
-  mainWindow.webContents.openDevTools(); // opcional: remove depois de testar
-}
-
-app.whenReady().then(createWindow);
-
-// IPC handlers
-ipcMain.handle('tasks-get', async () => {
-  return store.read();
+  renderTasks();
 });
-
-ipcMain.handle('tasks-save', async (_, tasks) => {
-  return store.write(tasks);
-});
-
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') app.quit();
-});
-
