@@ -9,7 +9,27 @@ document.addEventListener("DOMContentLoaded", function () {
     taskList.innerHTML = "";
     tasks.forEach((task, index) => {
       const li = document.createElement("li");
-      li.textContent = task.text;
+      li.className = task.done ? "done" : "";
+      li.innerHTML = `
+        <span>${task.text}</span>
+        <button class="toggleBtn">${task.done ? "Desfazer" : "Concluir"}</button>
+        <button class="deleteBtn">Excluir</button>
+      `;
+
+      // Marcar como concluída ou desfazer
+      li.querySelector(".toggleBtn").addEventListener("click", () => {
+        tasks[index].done = !tasks[index].done;
+        TaskStorage.saveTasks(tasks);
+        renderTasks();
+      });
+
+      // Excluir tarefa
+      li.querySelector(".deleteBtn").addEventListener("click", () => {
+        tasks.splice(index, 1);
+        TaskStorage.saveTasks(tasks);
+        renderTasks();
+      });
+
       taskList.appendChild(li);
     });
   }
@@ -17,7 +37,7 @@ document.addEventListener("DOMContentLoaded", function () {
   addBtn.addEventListener("click", function () {
     const text = taskInput.value.trim();
     if (text !== "") {
-      tasks.push({ text: text });
+      tasks.push({ text: text, done: false });
       TaskStorage.saveTasks(tasks);
       taskInput.value = "";
       renderTasks();
