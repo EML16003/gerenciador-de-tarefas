@@ -111,6 +111,12 @@ li span {
   word-break: break-word;
 }
 
+.done span {
+  text-decoration: line-through;
+  color: gray;
+}
+
+
 /* Botão de excluir */
 li button {
   background: #e53935;
