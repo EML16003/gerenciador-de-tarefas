@@ -65,20 +65,22 @@ function renderTasks() {
   });
 }
 
-// Eventos dos botões
+// Evento do botão "Adicionar"
 document.getElementById('addBtn').addEventListener('click', () => {
   const input = document.getElementById('taskInput');
   const texto = input.value.trim();
 
   if (texto !== '') {
-  input.value = '';
-  setTimeout(() => input.focus(), 0);
-
-  if (!tasks.some(t => t.text === texto)) {
-    addTask(texto);
-    renderTasks();
+    if (!tasks.some(t => t.text === texto)) {
+      addTask(texto);
+      renderTasks();
+    }
+    input.value = '';
+    setTimeout(() => input.focus(), 0);
   }
 });
+
+// Filtros
 document.getElementById('filterAll').addEventListener('click', () => {
   filter = 'all';
   renderTasks();
