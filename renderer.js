@@ -1,8 +1,21 @@
 console.log('renderer.js carregado');
 
+// --- Variáveis globais ---
 let tasks = [];
 let filter = 'all'; // all | pending | done
 
+// --- Funções de armazenamento com localStorage ---
+const TaskStorage = {
+  getTasks() {
+    const saved = localStorage.getItem('tasks');
+    return saved ? JSON.parse(saved) : [];
+  },
+  saveTasks(tasks) {
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+  }
+};
+
+// --- Carregar e salvar tarefas ---
 function loadTasks() {
   tasks = TaskStorage.getTasks();
   renderTasks();
@@ -12,23 +25,27 @@ function saveTasks() {
   TaskStorage.saveTasks(tasks);
 }
 
+// --- Adicionar tarefa ---
 function addTask(text) {
   tasks.push({ text, done: false });
   saveTasks();
 }
 
+// --- Alternar status ---
 function toggleTask(index) {
   tasks[index].done = !tasks[index].done;
   saveTasks();
   renderTasks();
 }
 
+// --- Excluir tarefa ---
 function deleteTask(index) {
   tasks.splice(index, 1);
   saveTasks();
   renderTasks();
 }
 
+// --- Renderizar lista ---
 function renderTasks() {
   const list = document.getElementById('taskList');
   list.innerHTML = '';
@@ -64,28 +81,40 @@ function renderTasks() {
   });
 }
 
-// Evento do botão "Adicionar"
+// --- Botão "Adicionar" ---
 document.getElementById('addBtn').addEventListener('click', () => {
   const input = document.getElementById('taskInput');
-  const textoOriginal = input.value;
-  const texto = textoOriginal.trim();
+  const texto = input.value.trim();
 
-  // Limpa e foca o campo sempre
-  input.value = '';
-  setTimeout(() => input.focus(), 0);
+  // Se estiver vazio, apenas foca
+  if (texto === '') {
+    input.focus();
+    return;
+  }
 
-  // Se estiver vazio, não faz nada
-  if (texto === '') return;
+  // Evita duplicadas
+  if (tasks.some(t => t.text === texto)) {
+    input.focus();
+    return;
+  }
 
-  // Se for duplicada, não adiciona
-  if (tasks.some(t => t.text === texto)) return;
-
-  // Adiciona e atualiza
+  // Adiciona tarefa e atualiza lista
   addTask(texto);
   renderTasks();
+
+  // ✅ Limpa campo e deixa cursor piscando
+  input.value = '';
+  input.focus();
 });
 
-// Filtros
+// --- Permitir adicionar com ENTER ---
+document.getElementById('taskInput').addEventListener('keypress', e => {
+  if (e.key === 'Enter') {
+    document.getElementById('addBtn').click();
+  }
+});
+
+// --- Filtros ---
 document.getElementById('filterAll').addEventListener('click', () => {
   filter = 'all';
   renderTasks();
@@ -99,4 +128,5 @@ document.getElementById('filterDone').addEventListener('click', () => {
   renderTasks();
 });
 
+// --- Inicializa ---
 loadTasks();
