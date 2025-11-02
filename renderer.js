@@ -79,7 +79,6 @@ document.getElementById('addBtn').addEventListener('click', () => {
 setTimeout(() => input.focus(), 0);
   }
 });
-
 document.getElementById('filterAll').addEventListener('click', () => {
   filter = 'all';
   renderTasks();
