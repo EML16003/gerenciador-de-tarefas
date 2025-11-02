@@ -1,25 +1,19 @@
 console.log('renderer.js carregado');
-const fs = require('fs');
-const path = require('path');
-const { app } = require('@electron/remote'); 
-const dataPath = path.join(app.getPath('userData'), 'tasks.json');
 
 let tasks = [];
 let filter = 'all'; // all | pending | done
 
-function loadTasks() {
-  if (fs.existsSync(dataPath)) {
-    const data = fs.readFileSync(dataPath, 'utf8');
-    tasks = JSON.parse(data);
-  }
+async function loadTasks() {
+  tasks = await window.api.getTasks();
   renderTasks();
 }
 
 function saveTasks() {
-  fs.writeFileSync(dataPath, JSON.stringify(tasks, null, 2));
+  window.api.saveTasks(tasks);
 }
 
 function addTask(text) {
+  if (tasks.some(t => t.text === text)) return; // evita duplicadas
   tasks.push({ text, done: false });
   saveTasks();
   renderTasks();
@@ -50,21 +44,19 @@ function renderTasks() {
   filtered.forEach((task, i) => {
     const li = document.createElement('li');
 
-    // Criação de checkbox com evento addEventListener
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
     checkbox.checked = task.done;
     checkbox.addEventListener('change', () => toggleTask(i));
 
-    // Texto da tarefa
     const span = document.createElement('span');
     span.textContent = task.text;
     span.style.textDecoration = task.done ? 'line-through' : 'none';
     span.style.flex = '1';
 
-    // Botão de excluir
     const delBtn = document.createElement('button');
     delBtn.textContent = '🗑️';
+    delBtn.setAttribute('aria-label', 'Excluir tarefa');
     delBtn.addEventListener('click', () => deleteTask(i));
 
     li.appendChild(checkbox);
@@ -81,19 +73,21 @@ document.getElementById('addBtn').addEventListener('click', () => {
   if (texto !== '') {
     addTask(texto);
     input.value = '';
-    input.focus(); // mantém o cursor no campo
-}
-
+    input.focus();
+  }
 });
 
-document.getElementById('filterAll').addEventListener('click', () => { filter = 'all'; renderTasks(); });
-document.getElementById('filterPending').addEventListener('click', () => { filter = 'pending'; renderTasks(); });
-document.getElementById('filterDone').addEventListener('click', () => { filter = 'done'; renderTasks(); });
-
-// Atualização automática
-fs.watch(dataPath, { encoding: 'utf8' }, (eventType) => {
-  if (eventType === 'change') loadTasks();
+document.getElementById('filterAll').addEventListener('click', () => {
+  filter = 'all';
+  renderTasks();
+});
+document.getElementById('filterPending').addEventListener('click', () => {
+  filter = 'pending';
+  renderTasks();
+});
+document.getElementById('filterDone').addEventListener('click', () => {
+  filter = 'done';
+  renderTasks();
 });
 
 loadTasks();
-
