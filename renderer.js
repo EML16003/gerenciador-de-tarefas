@@ -3,13 +3,13 @@ console.log('renderer.js carregado');
 let tasks = [];
 let filter = 'all'; // all | pending | done
 
-async function loadTasks() {
-  tasks = await window.api.getTasks();
+function loadTasks() {
+  tasks = TaskStorage.getTasks();
   renderTasks();
 }
 
 function saveTasks() {
-  window.api.saveTasks(tasks);
+  TaskStorage.saveTasks(tasks);
 }
 
 function addTask(text) {
