@@ -7,4 +7,4 @@ const TaskStorage = {
   saveTasks: function (tasks) {
     localStorage.setItem('tasks', JSON.stringify(tasks));
   }
-};
+
