@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function () {
         <button class="deleteBtn">Excluir</button>
       `;
 
-      // Marcar como concluída ou desfazer
+      // Alternar status de conclusão
       li.querySelector(".toggleBtn").addEventListener("click", () => {
         tasks[index].done = !tasks[index].done;
         TaskStorage.saveTasks(tasks);
@@ -34,9 +34,12 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  // Adicionar nova tarefa
   addBtn.addEventListener("click", function () {
     const text = taskInput.value.trim();
-    if (text !== "") {
+
+    // Evita tarefas vazias ou duplicadas
+    if (text !== "" && !tasks.some(t => t.text === text)) {
       tasks.push({ text: text, done: false });
       TaskStorage.saveTasks(tasks);
       taskInput.value = "";
