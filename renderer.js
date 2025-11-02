@@ -76,7 +76,7 @@ document.getElementById('addBtn').addEventListener('click', () => {
       renderTasks();
     }
     input.value = '';
-    input.focus();
+setTimeout(() => input.focus(), 0);
   }
 });
 
