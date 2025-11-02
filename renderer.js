@@ -16,7 +16,6 @@ function addTask(text) {
   if (tasks.some(t => t.text === text)) return; // evita duplicadas
   tasks.push({ text, done: false });
   saveTasks();
-  renderTasks();
 }
 
 function toggleTask(index) {
