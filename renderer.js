@@ -13,7 +13,6 @@ function saveTasks() {
 }
 
 function addTask(text) {
-  if (tasks.some(t => t.text === text)) return; // evita duplicadas
   tasks.push({ text, done: false });
   saveTasks();
 }
@@ -70,13 +69,15 @@ document.getElementById('addBtn').addEventListener('click', () => {
   const input = document.getElementById('taskInput');
   const texto = input.value.trim();
 
-  if (texto !== '') {
-    if (!tasks.some(t => t.text === texto)) {
-      addTask(texto);
-      renderTasks();
-    }
-    input.value = '';
-    setTimeout(() => input.focus(), 0);
+  if (texto === '') return;
+
+  const isDuplicate = tasks.some(t => t.text === texto);
+  input.value = '';
+  input.focus();
+
+  if (!isDuplicate) {
+    addTask(texto);
+    renderTasks();
   }
 });
 
