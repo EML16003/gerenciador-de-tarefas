@@ -71,12 +71,12 @@ document.getElementById('addBtn').addEventListener('click', () => {
   const texto = input.value.trim();
 
   if (texto !== '') {
-    if (!tasks.some(t => t.text === texto)) {
-      addTask(texto);
-      renderTasks();
-    }
-    input.value = '';
-setTimeout(() => input.focus(), 0);
+  input.value = '';
+  setTimeout(() => input.focus(), 0);
+
+  if (!tasks.some(t => t.text === texto)) {
+    addTask(texto);
+    renderTasks();
   }
 });
 document.getElementById('filterAll').addEventListener('click', () => {
