@@ -1,7 +1,7 @@
 /* Estilo geral do corpo */
 body {
   font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(135deg, #141E30, #243B55); /* fundo gradiente moderno */
+  background: linear-gradient(135deg, #141E30, #243B55);
   color: #fff;
   margin: 0;
   padding: 20px;
@@ -11,10 +11,10 @@ body {
 .container {
   max-width: 500px;
   margin: auto;
-  background: rgba(255, 255, 255, 0.08); /* leve transparência */
+  background: rgba(255, 255, 255, 0.08);
   padding: 20px;
   border-radius: 15px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }
 
 /* Título */
@@ -24,7 +24,8 @@ h1 {
 }
 
 /* Input e botões principais */
-input, button {
+input,
+button {
   padding: 10px;
   border-radius: 8px;
   border: none;
@@ -56,7 +57,9 @@ input, button {
   margin: 15px 0;
 }
 
-#filterAll, #filterPending, #filterDone {
+#filterAll,
+#filterPending,
+#filterDone {
   flex: 1;
   padding: 8px;
   border-radius: 8px;
@@ -67,14 +70,27 @@ input, button {
 }
 
 /* Diferenciando cada botão por cor */
-#filterAll { background: #0288d1; }
-#filterPending { background: #fbc02d; color: black; }
-#filterDone { background: #43a047; }
+#filterAll {
+  background: #0288d1;
+}
+#filterPending {
+  background: #fbc02d;
+  color: black;
+}
+#filterDone {
+  background: #43a047;
+}
 
 /* Efeito hover nos filtros */
-#filterAll:hover { background: #03a9f4; }
-#filterPending:hover { background: #ffee58; }
-#filterDone:hover { background: #66bb6a; }
+#filterAll:hover {
+  background: #03a9f4;
+}
+#filterPending:hover {
+  background: #ffee58;
+}
+#filterDone:hover {
+  background: #66bb6a;
+}
 
 /* Lista de tarefas */
 ul {
@@ -89,14 +105,14 @@ li {
   justify-content: space-between;
   align-items: center;
   margin: 8px 0;
-  background: rgba(255,255,255,0.1);
+  background: rgba(255, 255, 255, 0.1);
   padding: 8px 12px;
   border-radius: 8px;
   transition: background 0.2s;
 }
 
 li:hover {
-  background: rgba(255,255,255,0.2);
+  background: rgba(255, 255, 255, 0.2);
 }
 
 /* Checkbox e texto das tarefas */
@@ -116,7 +132,6 @@ li span {
   color: gray;
 }
 
-
 /* Botão de excluir */
 li button {
   background: #35e5bc;
@@ -125,10 +140,26 @@ li button {
   padding: 4px 8px;
   border-radius: 6px;
   cursor: pointer;
-  transition: background 0.1s;
+  transition: background 0.3s;
 }
 
 li button:hover {
   background: #ef5350;
 }
 
+/* Acessibilidade: foco visível */
+button:focus {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+/* Responsividade para telas menores */
+@media (max-width: 600px) {
+  #taskInput {
+    width: 100%;
+  }
+
+  .filters {
+    flex-direction: column;
+  }
+}
