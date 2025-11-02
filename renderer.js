@@ -67,18 +67,22 @@ function renderTasks() {
 // Evento do botão "Adicionar"
 document.getElementById('addBtn').addEventListener('click', () => {
   const input = document.getElementById('taskInput');
-  const texto = input.value.trim();
+  const textoOriginal = input.value;
+  const texto = textoOriginal.trim();
 
+  // Limpa e foca o campo sempre
+  input.value = '';
+  setTimeout(() => input.focus(), 0);
+
+  // Se estiver vazio, não faz nada
   if (texto === '') return;
 
-  const isDuplicate = tasks.some(t => t.text === texto);
-  input.value = '';
-  input.focus();
+  // Se for duplicada, não adiciona
+  if (tasks.some(t => t.text === texto)) return;
 
-  if (!isDuplicate) {
-    addTask(texto);
-    renderTasks();
-  }
+  // Adiciona e atualiza
+  addTask(texto);
+  renderTasks();
 });
 
 // Filtros
