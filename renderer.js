@@ -71,10 +71,12 @@ document.getElementById('addBtn').addEventListener('click', () => {
   const texto = input.value.trim();
 
   if (texto !== '') {
-    addTask(texto);       // adiciona a tarefa
-    input.value = '';     // limpa o campo
-    input.focus();        // mantém o cursor piscando
-    renderTasks();        // atualiza a lista
+    if (!tasks.some(t => t.text === texto)) {
+      addTask(texto);
+      renderTasks();
+    }
+    input.value = '';
+    input.focus();
   }
 });
 
