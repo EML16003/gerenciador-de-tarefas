@@ -70,10 +70,12 @@ function renderTasks() {
 document.getElementById('addBtn').addEventListener('click', () => {
   const input = document.getElementById('taskInput');
   const texto = input.value.trim();
+
   if (texto !== '') {
-    addTask(texto);
-    input.value = '';
-    input.focus();
+    addTask(texto);       // adiciona a tarefa
+    input.value = '';     // limpa o campo
+    input.focus();        // mantém o cursor piscando
+    renderTasks();        // atualiza a lista
   }
 });
 
