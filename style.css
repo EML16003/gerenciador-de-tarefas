@@ -1,165 +1,136 @@
-/* Estilo geral do corpo */
-body {
-  font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(135deg, #141E30, #243B55);
-  color: #fff;
+/* --- Fundo geral da página (degradê moderno) --- */
+html, body {
+  height: 100%;
   margin: 0;
-  padding: 20px;
-}
-
-/* Container central */
-.container {
-  max-width: 500px;
-  margin: auto;
-  background: rgba(255, 255, 255, 0.08);
-  padding: 20px;
-  border-radius: 15px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-}
-
-/* Título */
-h1 {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-/* Input e botões principais */
-input,
-button {
-  padding: 10px;
-  border-radius: 8px;
-  border: none;
-  margin: 5px 0;
-  font-size: 16px;
-}
-
-/* Input de nova tarefa ocupa a maior parte da largura */
-#taskInput {
-  width: 70%;
-}
-
-/* Botão de adicionar tarefa */
-#addBtn {
-  background: #00c853;
-  color: white;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-
-#addBtn:hover {
-  background: #00e676;
-}
-
-/* Botões de filtro */
-.filters {
+  padding: 0;
+  font-family: "Poppins", sans-serif;
+  background: linear-gradient(135deg, #74ebd5, #9face6); /* Azul-claro → Lilás */
   display: flex;
-  gap: 10px;
-  margin: 15px 0;
+  justify-content: center;
+  align-items: center;
+  color: #333;
 }
 
-#filterAll,
-#filterPending,
-#filterDone {
-  flex: 1;
-  padding: 8px;
+/* --- Container principal --- */
+.container {
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 15px;
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.15);
+  width: 90%;
+  max-width: 700px;
+  padding: 30px;
+  text-align: center;
+}
+
+/* --- Cabeçalho de boas-vindas --- */
+.container h1 {
+  color: #4a4a4a;
+  font-size: 2em;
+  margin-bottom: 10px;
+}
+
+/* --- Relógio (data e hora) --- */
+#clock {
+  color: #6b7280;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 15px;
+  display: block;
+}
+
+/* --- Campos de entrada --- */
+input,
+select {
+  border: 1px solid #ccc;
   border-radius: 8px;
+  padding: 8px;
+  font-size: 14px;
+  margin: 5px;
+}
+
+/* --- Botões padrão --- */
+button {
   border: none;
   cursor: pointer;
-  color: white;
-  transition: background 0.3s;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 14px;
+  transition: all 0.3s ease;
 }
 
-/* Diferenciando cada botão por cor */
-#filterAll {
-  background: #0288d1;
+/* --- Botões principais --- */
+.btn-all {
+  background-color: #007bff;
+  color: white;
 }
-#filterPending {
-  background: #fbc02d;
+
+.btn-pending {
+  background-color: #f5a623;
   color: black;
 }
-#filterDone {
-  background: #43a047;
+
+.btn-done {
+  background-color: #28a745;
+  color: white;
 }
 
-/* Efeito hover nos filtros */
-#filterAll:hover {
-  background: #03a9f4;
-}
-#filterPending:hover {
-  background: #ffee58;
-}
-#filterDone:hover {
-  background: #66bb6a;
+button:hover {
+  opacity: 0.85;
 }
 
-/* Lista de tarefas */
-ul {
+/* --- Lista de tarefas --- */
+#taskList {
+  margin-top: 20px;
+  text-align: left;
   list-style: none;
   padding: 0;
-  margin: 0;
 }
 
-/* Cada item da lista */
-li {
+/* --- Cada tarefa individual --- */
+.task-item {
+  background: #f9fafb;
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 8px 0;
-  background: rgba(255, 255, 255, 0.1);
-  padding: 8px 12px;
-  border-radius: 8px;
-  transition: background 0.2s;
 }
 
-li:hover {
-  background: rgba(255, 255, 255, 0.2);
+.task-item strong {
+  font-size: 15px;
 }
 
-/* Checkbox e texto das tarefas */
-li input[type="checkbox"] {
-  margin-right: 10px;
-  transform: scale(1.2);
+/* --- Ações compactas (ícones) --- */
+.task-actions {
+  display: flex;
+  align-items: center;
 }
 
-/* Tarefas concluídas com texto riscado */
-li span {
-  flex: 1;
-  word-break: break-word;
-}
-
-.done span {
-  text-decoration: line-through;
-  color: gray;
-}
-
-/* Botão de excluir */
-li button {
-  background: #35e5bc;
-  color: white;
+.task-actions button {
+  background: transparent;
   border: none;
-  padding: 4px 8px;
-  border-radius: 6px;
   cursor: pointer;
-  transition: background 0.3s;
+  font-size: 16px;
+  margin-left: 8px;
 }
 
-li button:hover {
-  background: #ef5350;
+.task-actions button:hover {
+  transform: scale(1.15);
 }
 
-/* Acessibilidade: foco visível */
-button:focus {
-  outline: 2px solid #fff;
-  outline-offset: 2px;
+/* --- Cores dos ícones --- */
+.done-btn {
+  color: #28a745;
 }
 
-/* Responsividade para telas menores */
-@media (max-width: 600px) {
-  #taskInput {
-    width: 100%;
-  }
-
-  .filters {
-    flex-direction: column;
-  }
+.edit-btn {
+  color: #007bff;
 }
+
+.delete-btn {
+  color: #dc3545;
+}
+
+
+
