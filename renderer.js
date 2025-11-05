@@ -1,132 +1,153 @@
-console.log('renderer.js carregado');
+console.log("renderer.js carregado");
 
-// --- Variáveis globais ---
+// --- Armazena as tarefas em memória ---
 let tasks = [];
-let filter = 'all'; // all | pending | done
+let filter = "all"; // all | pending | done
 
-// --- Funções de armazenamento com localStorage ---
-const TaskStorage = {
-  getTasks() {
-    const saved = localStorage.getItem('tasks');
-    return saved ? JSON.parse(saved) : [];
-  },
-  saveTasks(tasks) {
-    localStorage.setItem('tasks', JSON.stringify(tasks));
-  }
-};
+// --- Ao carregar a página ---
+document.addEventListener("DOMContentLoaded", loadTasks);
 
-// --- Carregar e salvar tarefas ---
+// --- Função: carregar tarefas do armazenamento local ---
 function loadTasks() {
   tasks = TaskStorage.getTasks();
   renderTasks();
 }
 
+// --- Função: salvar tarefas no localStorage e atualizar tela ---
 function saveTasks() {
   TaskStorage.saveTasks(tasks);
-}
-
-// --- Adicionar tarefa ---
-function addTask(text) {
-  tasks.push({ text, done: false });
-  saveTasks();
-}
-
-// --- Alternar status ---
-function toggleTask(index) {
-  tasks[index].done = !tasks[index].done;
-  saveTasks();
   renderTasks();
 }
 
-// --- Excluir tarefa ---
-function deleteTask(index) {
-  tasks.splice(index, 1);
-  saveTasks();
-  renderTasks();
-}
+// --- Adiciona nova tarefa ---
+document.getElementById("addTaskBtn").addEventListener("click", () => {
+  const name = document.getElementById("taskInput").value.trim();
+  const category = document.getElementById("categorySelect").value.trim();
+  const timeValue = document.getElementById("timeValue").value.trim();
+  const timeUnit = document.getElementById("timeUnit").value;
 
-// --- Renderizar lista ---
+  if (!name) {
+    alert("Digite o nome da tarefa!");
+    return;
+  }
+
+  const newTask = {
+    id: Date.now(),
+    name,
+    category: category || "Sem categoria",
+    timeValue: timeValue || "0",
+    timeUnit: timeUnit || "segundo",
+    done: false,
+    createdAt: new Date(),
+  };
+
+  tasks.push(newTask);
+  saveTasks();
+
+  // Limpa campos
+  document.getElementById("taskInput").value = "";
+  document.getElementById("categorySelect").value = "";
+  document.getElementById("timeValue").value = "";
+  document.getElementById("timeUnit").value = "segundo";
+  document.getElementById("taskInput").focus();
+
+  scheduleTaskNotification(newTask);
+});
+
+// --- Renderiza as tarefas na tela ---
 function renderTasks() {
-  const list = document.getElementById('taskList');
-  list.innerHTML = '';
+  const list = document.getElementById("taskList");
+  list.innerHTML = "";
 
-  const filtered = tasks.filter(t => {
-    if (filter === 'pending') return !t.done;
-    if (filter === 'done') return t.done;
-    return true;
-  });
+  // Aplica o filtro
+  const filteredTasks =
+    filter === "all"
+      ? tasks
+      : filter === "done"
+      ? tasks.filter((t) => t.done)
+      : tasks.filter((t) => !t.done);
 
-  filtered.forEach((task, i) => {
-    const li = document.createElement('li');
+  // Cria o elemento de cada tarefa
+  filteredTasks.forEach((task) => {
+    const li = document.createElement("li");
+    li.className = "task-item";
 
-    const checkbox = document.createElement('input');
-    checkbox.type = 'checkbox';
-    checkbox.checked = task.done;
-    checkbox.addEventListener('change', () => toggleTask(i));
+    li.innerHTML = `
+      <div>
+        <strong>${task.name}</strong>
+        <small> - ${task.category}</small><br>
+        <small>Tempo: ${task.timeValue} ${task.timeUnit}${
+      task.timeValue > 1 ? "s" : ""
+    }</small>
+      </div>
+      <div>
+        <button class="done-btn">${task.done ? "✔ Concluída" : "Concluir"}</button>
+        <button class="delete-btn">🗑 Excluir</button>
+      </div>
+    `;
 
-    const span = document.createElement('span');
-    span.textContent = task.text;
-    span.style.textDecoration = task.done ? 'line-through' : 'none';
-    span.style.flex = '1';
+    // Botão "Concluir"
+    li.querySelector(".done-btn").addEventListener("click", () => {
+      task.done = !task.done;
+      saveTasks();
+    });
 
-    const delBtn = document.createElement('button');
-    delBtn.textContent = '🗑️';
-    delBtn.setAttribute('aria-label', 'Excluir tarefa');
-    delBtn.addEventListener('click', () => deleteTask(i));
+    // Botão "Excluir"
+    li.querySelector(".delete-btn").addEventListener("click", () => {
+      tasks = tasks.filter((t) => t.id !== task.id);
+      saveTasks();
+    });
 
-    li.appendChild(checkbox);
-    li.appendChild(span);
-    li.appendChild(delBtn);
     list.appendChild(li);
   });
 }
 
-// --- Botão "Adicionar" ---
-document.getElementById('addBtn').addEventListener('click', () => {
-  const input = document.getElementById('taskInput');
-  const texto = input.value.trim();
+// --- Filtro de exibição ---
+function setFilter(type) {
+  filter = type;
+  renderTasks();
+}
 
-  // Se estiver vazio, apenas foca
-  if (texto === '') {
-    input.focus();
+// --- Agenda a notificação ---
+function scheduleTaskNotification(task) {
+  if (!task.timeValue || isNaN(task.timeValue)) return;
+
+  const timeMs = convertToMilliseconds(task.timeValue, task.timeUnit);
+
+  setTimeout(() => {
+    showNotification(
+      "Prazo expirado!",
+      `A tarefa "${task.name}" ultrapassou o tempo estimado. Verifique ou conclua.`
+    );
+  }, timeMs);
+}
+
+// --- Converte unidades de tempo ---
+function convertToMilliseconds(value, unit) {
+  const v = parseInt(value);
+  switch (unit) {
+    case "segundo": return v * 1000;
+    case "minuto": return v * 60 * 1000;
+    case "hora": return v * 60 * 60 * 1000;
+    case "dia": return v * 24 * 60 * 60 * 1000;
+    case "mês": return v * 30 * 24 * 60 * 60 * 1000;
+    case "ano": return v * 365 * 24 * 60 * 60 * 1000;
+    default: return 0;
+  }
+}
+
+// --- Exibe notificação ---
+function showNotification(title, message) {
+  if (!("Notification" in window)) {
+    alert(`${title}\n${message}`);
     return;
   }
 
-  // Evita duplicadas
-  if (tasks.some(t => t.text === texto)) {
-    input.focus();
-    return;
+  if (Notification.permission === "granted") {
+    new Notification(title, { body: message });
+  } else if (Notification.permission !== "denied") {
+    Notification.requestPermission().then((perm) => {
+      if (perm === "granted") new Notification(title, { body: message });
+    });
   }
-
-  // Adiciona tarefa e atualiza lista
-  addTask(texto);
-  renderTasks();
-
-  // ✅ Limpa campo e deixa cursor piscando
-  input.value = '';
-  input.focus();
-});
-
-// --- Permitir adicionar com ENTER ---
-document.getElementById('taskInput').addEventListener('keypress', e => {
-  if (e.key === 'Enter') {
-    document.getElementById('addBtn').click();
-  }
-});
-
-// --- Filtros ---
-document.getElementById('filterAll').addEventListener('click', () => {
-  filter = 'all';
-  renderTasks();
-});
-document.getElementById('filterPending').addEventListener('click', () => {
-  filter = 'pending';
-  renderTasks();
-});
-document.getElementById('filterDone').addEventListener('click', () => {
-  filter = 'done';
-  renderTasks();
-});
-
-// --- Inicializa ---
-loadTasks();
+}
